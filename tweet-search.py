@@ -1,4 +1,20 @@
 import tweepy
+import time
+
+def RateLimited(maxPerSecond):
+    minInterval = 1.0 / float(maxPerSecond)
+    def decorate(func):
+        lastTimeCalled = [0.0]
+        def rateLimitedFunction(*args,**kargs):
+            elapsed = time.clock() - lastTimeCalled[0]
+            leftToWait = minInterval - elapsed
+            if leftToWait>0:
+                time.sleep(leftToWait)
+            ret = func(*args,**kargs)
+            lastTimeCalled[0] = time.clock()
+            return ret
+        return rateLimitedFunction
+    return decorate
 
 class Twitter:
 
@@ -14,10 +30,13 @@ class Twitter:
 
     # In application-only auth, the application can make 450 queries/requests
     # per 15 minutes or equivalently 30 queries per minute.
+    @RateLimited(0.5) # 1 query per 2 seconds
     def keyword_search(self, keyword):
         print keyword
 
 
 if __name__=="__main__":
     twitter = Twitter()
-    twitter.keyword_search("Nigga")
+
+    for i in range(1,11):
+        twitter.keyword_search("Nigga")
