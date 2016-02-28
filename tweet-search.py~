@@ -43,7 +43,7 @@ class Twitter:
                 result = self.api.search(q = keyword, rpp = 1)
                 tweet = result[r.randint(0, len(result) - 1)]
 
-		self.pretty_print_tweet(tweet)
+                pretty_print_tweet(tweet)
 
                 return tweet
             except tweepy.TweepError, err:
