@@ -1,7 +1,7 @@
 import tweepy
 import time
 import json
-import random
+import sys
 
 def RateLimited(maxPerSecond):
     minInterval = 1.0 / float(maxPerSecond)
@@ -33,23 +33,29 @@ class Twitter:
     # In application-only auth, the application can make 450 queries/requests
     # per 15 minutes or equivalently 1 query per 2 seconds.
     @RateLimited(0.5) # 1 query per 2 seconds
-    def keyword_search(self, keyword):
-        try:
-            result = self.api.search(q = keyword, rpp = 1)
-            tweet = result[random.randint(0, len(result) - 1)]
+    def keyword_search(self, keyword=None):
+        if keyword:
+            try:
+                result = self.api.search(q = keyword, rpp = 1)
+                tweet = result[0]
 
-            text = tweet.text.encode('ascii', 'ignore')
-            user_handle = "@" + tweet.author.screen_name
+                text = tweet.text.encode('ascii', 'ignore')
+                user_handle = "@" + tweet.author.screen_name
 
-            print user_handle + ": " + text
-        except tweepy.TweepError, err:
-            err = err.message[0]
-            print "Tweepy Error: " + `err['code']` + " - " +  err['message']
-
+                print user_handle + ": " + text
+            except tweepy.TweepError, err:
+                err = err.message[0]
+                print "Tweepy Error: " + `err['code']` + " - " +  err['message']
+        else:
+            print "Please enter a valid keyword"
 
 if __name__=="__main__":
+
+    # Capture all the keywords passed as arguments in the prompt.
+    keywords = sys.argv[1:]
+
     twitter = Twitter()
-    keywords = ['IBM', 'Cricket', 'Deadpool', 'Tesla', 'Trump']
+
     for keyword in keywords:
         twitter.keyword_search(keyword)
         print ""
