@@ -43,6 +43,8 @@ class Twitter:
                 result = self.api.search(q = keyword, rpp = 1)
                 tweet = result[r.randint(0, len(result) - 1)]
 
+                pretty_print_tweet(tweet)
+
                 return tweet
             except tweepy.TweepError, err:
                 err = err.message[0]
@@ -73,5 +75,4 @@ if __name__=="__main__":
     twitter = Twitter()
 
     for keyword in keywords:
-        tweet = twitter.keyword_search(keyword)
-        twitter.pretty_print_tweet(tweet)
+        twitter.keyword_search(keyword)
