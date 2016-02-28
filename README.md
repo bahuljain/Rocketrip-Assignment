@@ -1,4 +1,4 @@
-# Twitter Keyword search
+# Twitter Keyword Search
 
 This program returns a random tweet based on a keyword search. The program
 accepts keywords from command prompt.
